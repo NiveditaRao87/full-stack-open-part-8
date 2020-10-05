@@ -96,7 +96,14 @@ const resolvers = {
         }
         return null
       },
-    allAuthors: () => Author.find({}),
+    allAuthors: async () => {
+      const authors = await Author.find({})
+      authors.map(author => {
+        author.bookCount = Book.countDocuments({author: author.id})
+        return author
+      })
+      return authors
+    },
     me: (root, args, context) => {
       return context.currentUser
     }
